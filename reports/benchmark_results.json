@@ -1,0 +1,158 @@
+[
+  {
+    "query": "How does the system handle peak load?",
+    "expanded_query": "The system manages peak load by combining horizontal auto-scaling, circuit breakers, and backpressure mechanisms. When traffic spikes, the load balancer detects rising CPU utilisation and queue depth, triggering the orchestrator to spin up additional compute replicas within seconds. Circuit breakers prevent cascade failures by returning cached fallback responses when downstream error rates are high. Rate limiting via token-bucket quotas at the API gateway further shields backend services from being overwhelmed.",
+    "strategy_a": [
+      {
+        "rank": 1,
+        "doc_id": "doc_001",
+        "title": "Horizontal Scaling Under Peak Load",
+        "score": 0.5706,
+        "snippet": "When traffic spikes, the system relies on horizontal auto-scaling to distribute incoming requests across newly provisioned compute nodes. A load balancer continuously monitors CPU utilisation and requ"
+      },
+      {
+        "rank": 2,
+        "doc_id": "doc_002",
+        "title": "Circuit Breaker and Backpressure",
+        "score": 0.4131,
+        "snippet": "To prevent cascade failures, every inter-service call is wrapped in a circuit breaker. When downstream error rates exceed 50% over a rolling 10-second window the circuit opens and callers receive a pr"
+      },
+      {
+        "rank": 3,
+        "doc_id": "doc_009",
+        "title": "Asynchronous Job Queue Architecture",
+        "score": 0.3357,
+        "snippet": "Long-running tasks such as report generation, email dispatch, and ML inference are offloaded from the synchronous request path to a durable job queue backed by Apache Kafka. Workers pull tasks in conf"
+      }
+    ],
+    "strategy_b": [
+      {
+        "rank": 1,
+        "doc_id": "doc_001",
+        "title": "Horizontal Scaling Under Peak Load",
+        "score": 0.8125,
+        "snippet": "When traffic spikes, the system relies on horizontal auto-scaling to distribute incoming requests across newly provisioned compute nodes. A load balancer continuously monitors CPU utilisation and requ"
+      },
+      {
+        "rank": 2,
+        "doc_id": "doc_002",
+        "title": "Circuit Breaker and Backpressure",
+        "score": 0.6495,
+        "snippet": "To prevent cascade failures, every inter-service call is wrapped in a circuit breaker. When downstream error rates exceed 50% over a rolling 10-second window the circuit opens and callers receive a pr"
+      },
+      {
+        "rank": 3,
+        "doc_id": "doc_010",
+        "title": "Rate Limiting and Quota Enforcement",
+        "score": 0.6012,
+        "snippet": "Each API consumer is assigned a token-bucket quota enforced at the edge gateway. Buckets refill at a steady per-second rate and allow short bursts up to twice the baseline rate, accommodating legitima"
+      }
+    ],
+    "overlap_count": 2,
+    "top1_changed": false
+  },
+  {
+    "query": "Explain the caching mechanism",
+    "expanded_query": "The caching architecture uses multiple layers to reduce database load and lower latency. An in-process LRU cache handles the hottest data, a distributed Redis cluster serves shared application state, and a CDN edge cache absorbs static content at the network perimeter. Cache invalidation combines TTL-based expiry for stable reference data with event-driven pub/sub invalidation for frequently changing user records.",
+    "strategy_a": [
+      {
+        "rank": 1,
+        "doc_id": "doc_003",
+        "title": "Caching Strategy and Cache Invalidation",
+        "score": 0.479,
+        "snippet": "A three-layer caching hierarchy \u2014 in-process LRU, distributed Redis cluster, and a CDN edge cache \u2014 absorbs the majority of read traffic before it reaches the primary database. TTL-based invalidation "
+      },
+      {
+        "rank": 2,
+        "doc_id": "doc_002",
+        "title": "Circuit Breaker and Backpressure",
+        "score": 0.4173,
+        "snippet": "To prevent cascade failures, every inter-service call is wrapped in a circuit breaker. When downstream error rates exceed 50% over a rolling 10-second window the circuit opens and callers receive a pr"
+      },
+      {
+        "rank": 3,
+        "doc_id": "doc_001",
+        "title": "Horizontal Scaling Under Peak Load",
+        "score": 0.3699,
+        "snippet": "When traffic spikes, the system relies on horizontal auto-scaling to distribute incoming requests across newly provisioned compute nodes. A load balancer continuously monitors CPU utilisation and requ"
+      }
+    ],
+    "strategy_b": [
+      {
+        "rank": 1,
+        "doc_id": "doc_003",
+        "title": "Caching Strategy and Cache Invalidation",
+        "score": 0.8901,
+        "snippet": "A three-layer caching hierarchy \u2014 in-process LRU, distributed Redis cluster, and a CDN edge cache \u2014 absorbs the majority of read traffic before it reaches the primary database. TTL-based invalidation "
+      },
+      {
+        "rank": 2,
+        "doc_id": "doc_007",
+        "title": "Database Sharding and Read Replicas",
+        "score": 0.509,
+        "snippet": "The primary datastore is sharded horizontally by tenant ID using consistent hashing, which evenly distributes write load and keeps cross-shard joins rare. Each shard maintains two synchronous read rep"
+      },
+      {
+        "rank": 3,
+        "doc_id": "doc_002",
+        "title": "Circuit Breaker and Backpressure",
+        "score": 0.4769,
+        "snippet": "To prevent cascade failures, every inter-service call is wrapped in a circuit breaker. When downstream error rates exceed 50% over a rolling 10-second window the circuit opens and callers receive a pr"
+      }
+    ],
+    "overlap_count": 2,
+    "top1_changed": false
+  },
+  {
+    "query": "How are embeddings stored and searched?",
+    "expanded_query": "Text documents are chunked, encoded into dense embedding vectors using a sentence-transformer model, and L2-normalised before being stored in a FAISS index. The IndexFlatIP structure performs exact inner-product search, which equals cosine similarity on unit-normalised vectors. At query time the query text is embedded with the same model and the top-k nearest document chunks are retrieved by similarity score.",
+    "strategy_a": [
+      {
+        "rank": 1,
+        "doc_id": "doc_005",
+        "title": "FAISS Index Construction and Search",
+        "score": 0.6046,
+        "snippet": "Embeddings are stored in a FAISS index using the IndexFlatIP structure for exact inner-product search on unit-normalised vectors, which is equivalent to cosine similarity. For datasets larger than 10 "
+      },
+      {
+        "rank": 2,
+        "doc_id": "doc_004",
+        "title": "Vector Embedding Generation Pipeline",
+        "score": 0.5096,
+        "snippet": "Raw text documents are first cleaned and chunked into 512-token segments with a 64-token overlap to preserve sentence context across boundaries. Each chunk is then passed through a sentence-transforme"
+      },
+      {
+        "rank": 3,
+        "doc_id": "doc_006",
+        "title": "Query Expansion via Generative Rewriting",
+        "score": 0.4665,
+        "snippet": "Short or ambiguous user queries often produce poor retrieval recall because their embeddings lie far from the relevant document clusters. A lightweight generative model rewrites each incoming query in"
+      }
+    ],
+    "strategy_b": [
+      {
+        "rank": 1,
+        "doc_id": "doc_004",
+        "title": "Vector Embedding Generation Pipeline",
+        "score": 0.8467,
+        "snippet": "Raw text documents are first cleaned and chunked into 512-token segments with a 64-token overlap to preserve sentence context across boundaries. Each chunk is then passed through a sentence-transforme"
+      },
+      {
+        "rank": 2,
+        "doc_id": "doc_005",
+        "title": "FAISS Index Construction and Search",
+        "score": 0.6756,
+        "snippet": "Embeddings are stored in a FAISS index using the IndexFlatIP structure for exact inner-product search on unit-normalised vectors, which is equivalent to cosine similarity. For datasets larger than 10 "
+      },
+      {
+        "rank": 3,
+        "doc_id": "doc_006",
+        "title": "Query Expansion via Generative Rewriting",
+        "score": 0.5565,
+        "snippet": "Short or ambiguous user queries often produce poor retrieval recall because their embeddings lie far from the relevant document clusters. A lightweight generative model rewrites each incoming query in"
+      }
+    ],
+    "overlap_count": 3,
+    "top1_changed": true
+  }
+]
